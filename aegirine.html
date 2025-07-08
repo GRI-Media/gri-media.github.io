@@ -46,16 +46,24 @@
 
       let isPlaying = true;
 
-      $("#aegirine-viewer").spritespin({
-        source: imageUrls,
-        width: 500,
-        height: 500,
-        sense: -1,
-        frameTime: 60,
-        animate: isPlaying,
-        loop: true,
-        responsive: true,
-      });
+      const firstImage = new Image();
+firstImage.onload = function () {
+  const aspectRatio = this.height / this.width;
+  const containerWidth = 600; // or set to your preferred display width
+  const containerHeight = containerWidth * aspectRatio;
+
+  $("#aegirine-viewer").spritespin({
+    source: imageUrls,
+    width: containerWidth,
+    height: containerHeight,
+    sense: -1,
+    frameTime: 60,
+    animate: isPlaying,
+    loop: true,
+    responsive: true,
+  });
+};
+firstImage.src = imageUrls[0];
 
       $("#toggle-spin").click(function () {
         isPlaying = !isPlaying;
