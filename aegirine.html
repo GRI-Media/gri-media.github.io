@@ -12,10 +12,11 @@ body {
   padding-bottom: 3em;
 }
       #aegirine-viewer {
-        width: 750px;
-        height: 750px;
-        margin: 1rem auto;
-      }
+  width: 100%;
+  max-width: 750px;
+  aspect-ratio: 3 / 2;
+  margin: 1rem auto;
+}
       p {
   font-size: 1rem;
   font-weight: normal;
@@ -53,7 +54,7 @@ body {
       const firstImage = new Image();
 firstImage.onload = function () {
   const aspectRatio = this.height / this.width;
-  const containerWidth = 900; // or set to your preferred display width
+  const containerWidth = document.getElementById("aegirine-viewer").clientWidth;
   const containerHeight = containerWidth * aspectRatio;
 
   $("#aegirine-viewer").spritespin({
