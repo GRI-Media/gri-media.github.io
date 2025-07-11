@@ -11,7 +11,7 @@ body {
   margin: 0;
   padding: 0.5em 1em 1em;
 }
-      #aegirine-viewer {
+      #fluorite-viewer {
   width: 100%;
   max-width: 700px;
   aspect-ratio: 3 / 2;
@@ -38,7 +38,7 @@ body {
     <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
   </head>
   <body>
-    <div id="aegirine-viewer"></div>
+    <div id="fluorite-viewer"></div>
     <p>Click &amp; Drag</p>
     <button id="toggle-spin">Pause Rotation</button>
 
@@ -54,10 +54,12 @@ body {
       const firstImage = new Image();
 firstImage.onload = function () {
   const aspectRatio = this.height / this.width;
-  const containerWidth = document.getElementById("aegirine-viewer").clientWidth;
+  const containerWidth = document.getElementById("fluorite-viewer").clientWidth;
   const containerHeight = containerWidth * aspectRatio;
 
-  $("#aegirine-viewer").spritespin({
+  $("#fluorite-viewer").spritespin({
+  ...
+});
     source: imageUrls,
     width: containerWidth,
     height: containerHeight,
@@ -72,7 +74,7 @@ firstImage.src = imageUrls[0];
 
       $("#toggle-spin").click(function () {
         isPlaying = !isPlaying;
-        $("#aegirine-viewer").spritespin("animate", isPlaying);
+        $("#fluorite-viewer").spritespin("animate", isPlaying);
         $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
       });
     </script>
