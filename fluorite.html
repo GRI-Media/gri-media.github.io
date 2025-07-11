@@ -4,25 +4,28 @@
     <meta charset="UTF-8" />
     <title>Fluorite Viewer</title>
     <style>
-body {
-  font-family: sans-serif;
-  background: white;
-  text-align: center;
-  margin: 0;
-  padding: 0.5em 1em 1em;
-}
+      body {
+        font-family: sans-serif;
+        background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
+      }
+
       #fluorite-viewer {
-  width: 100%;
-  max-width: 700px;
-  aspect-ratio: 3 / 2;
-  margin: 1rem auto;
-}
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
+      }
+
       p {
-  font-size: 0.9rem;
-  font-weight: normal;
-  margin: 0.5em 0;
-  color: #000;
-}
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
+      }
+
       button {
         padding: 0.5em 1em;
         font-size: 1rem;
@@ -52,31 +55,30 @@ body {
       let isPlaying = true;
 
       const firstImage = new Image();
-firstImage.onload = function () {
-  const aspectRatio = this.height / this.width;
-  const containerWidth = document.getElementById("fluorite-viewer").clientWidth;
-  const containerHeight = containerWidth * aspectRatio;
+      firstImage.src = imageUrls[0];
 
-  $("#fluorite-viewer").spritespin({
-  ...
-});
-    source: imageUrls,
-    width: containerWidth,
-    height: containerHeight,
-    sense: 1,
-    frameTime: 60,
-    animate: isPlaying,
-    loop: true,
-    responsive: true,
-  });
-};
-firstImage.src = imageUrls[0];
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("fluorite-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
 
-      $("#toggle-spin").click(function () {
-        isPlaying = !isPlaying;
-        $("#fluorite-viewer").spritespin("animate", isPlaying);
-        $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
-      });
+        $("#fluorite-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#fluorite-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
     </script>
   </body>
 </html>
