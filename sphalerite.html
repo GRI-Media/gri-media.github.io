@@ -2,42 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sphalerite 360° Viewer</title>
-  <link href="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/threesixty.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/threesixty.min.css" />
   <style>
     body {
       margin: 0;
-      background-color: #000;
+      background-color: #111;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
     }
-    #viewer {
-      width: 100%;
-      max-width: 800px;
+    #sphalerite360 {
+      width: 90vw;
+      max-width: 600px;
+      height: auto;
     }
   </style>
 </head>
 <body>
-  <div id="viewer">
-    <div class="threesixty" data-path="https://res.cloudinary.com/dy8hjxyum/image/upload/v1752716511/sphalerite-" data-count="79" data-fileext=".jpg"></div>
-  </div>
+  <div id="sphalerite360"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/threesixty.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/jquery.threesixty.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('.threesixty').ThreeSixty({
-        dragDirection: 'horizontal',
-        useKeys: true,
-        draggable: true,
-        responsive: true,
-        onReady: function () {
-          console.log('Sphalerite viewer loaded.');
-        },
-      });
+    $('#sphalerite360').ThreeSixty({
+      totalFrames: 79,
+      endFrame: 79,
+      currentFrame: 1,
+      imgList: '.threesixty_images',
+      progress: '.spinner',
+      imagePath: 'https://res.cloudinary.com/dy8hjxyum/image/upload/v1752716511/',
+      filePrefix: 'sphalerite-',
+      ext: '.jpg',
+      height: 400,
+      width: 400,
+      navigation: true,
+      responsive: true
     });
   </script>
 </body>
