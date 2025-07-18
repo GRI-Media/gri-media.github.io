@@ -3,44 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sphalerite 360° Viewer</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/threesixty.min.css" />
+  <title>Sphalerite 360º Viewer</title>
   <style>
     body {
       margin: 0;
       background-color: #111;
+      color: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: sans-serif;
     }
-    #sphalerite360 {
-      width: 90vw;
+    h1 {
+      margin: 20px;
+    }
+    #viewer {
+      width: 100%;
       max-width: 600px;
       height: auto;
+      touch-action: none;
     }
   </style>
 </head>
 <body>
-  <div id="sphalerite360"></div>
+  <h1>Sphalerite 360º Viewer</h1>
+  <img id="viewer" src="" alt="Sphalerite 360º view" />
 
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/threesixty-slider@2.0.5/dist/jquery.threesixty.min.js"></script>
   <script>
-    $('#sphalerite360').ThreeSixty({
-      totalFrames: 79,
-      endFrame: 79,
-      currentFrame: 1,
-      imgList: '.threesixty_images',
-      progress: '.spinner',
-      imagePath: 'https://res.cloudinary.com/dy8hjxyum/image/upload/v1752716511/',
-      filePrefix: 'sphalerite-',
-      ext: '.jpg',
-      height: 400,
-      width: 400,
-      navigation: true,
-      responsive: true
+    const frameCount = 79;
+    const imageFolder = 'https://res.cloudinary.com/dy8hjxyum/image/upload/v1752716511/';
+    const imagePrefix = 'sphalerite-';
+    const imageExtension = '.jpg';
+
+    const viewer = document.getElementById('viewer');
+    let images = [];
+    let currentFrame = 0;
+    let dragging = false;
+    let startX;
+
+    function pad(num, size) {
+      let s = "00000" + num;
+      return s.substr(s.length - size);
+    }
+
+    function preloadImages() {
+      for (let i = 1; i <= frameCount; i++) {
+        const filename = `${imageFolder}${imagePrefix}${pad(i, 5)}${imageExtension}`;
+        const img = new Image();
+        img.src = filename;
+        images.push(img);
+      }
+      viewer.src = images[0].src;
+    }
+
+    function updateImage(index) {
+      viewer.src = images[index].src;
+    }
+
+    function handleDrag(e) {
+      if (!dragging) return;
+      const deltaX = e.clientX - startX;
+      if (Math.abs(deltaX) > 5) {
+        const direction = deltaX > 0 ? -1 : 1;
+        currentFrame = (currentFrame + direction + frameCount) % frameCount;
+        updateImage(currentFrame);
+        startX = e.clientX;
+      }
+    }
+
+    viewer.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startX = e.clientX;
     });
+
+    window.addEventListener('mouseup', () => {
+      dragging = false;
+    });
+
+    window.addEventListener('mousemove', handleDrag);
+
+    // Touch support
+    viewer.addEventListener('touchstart', (e) => {
+      dragging = true;
+      startX = e.touches[0].clientX;
+    });
+
+    window.addEventListener('touchend', () => {
+      dragging = false;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      const deltaX = e.touches[0].clientX - startX;
+      if (Math.abs(deltaX) > 5) {
+        const direction = deltaX > 0 ? -1 : 1;
+        currentFrame = (currentFrame + direction + frameCount) % frameCount;
+        updateImage(currentFrame);
+        startX = e.touches[0].clientX;
+      }
+    });
+
+    preloadImages();
   </script>
 </body>
 </html>
