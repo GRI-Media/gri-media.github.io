@@ -1,11 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GRI Mineral Viewer</title>
+    <link rel="stylesheet" href="assets/css/threesixty.css" />
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 2rem;
+        background: #f5f5f5;
+        text-align: center;
+      }
+
+      #viewer {
+        max-width: 600px;
+        margin: 2rem auto;
+      }
+    </style>
   </head>
   <body>
-    <h1>It works!</h1>
-    <p>This is your GitHub Pages site served from <code>gri-media.github.io</code></p>
+    <h1>Amazonite 360° Viewer</h1>
+    <div id="viewer"></div>
+
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/jquery.threesixty.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        const images = [];
+        for (let i = 1; i <= 100; i++) {
+          const num = i.toString().padStart(5, '0');
+          images.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1752531645/Amazonite-${num}.jpg`);
+        }
+
+        $('#viewer').ThreeSixty({
+          totalFrames: 100,
+          endFrame: 100,
+          currentFrame: 1,
+          imgList: '.threesixty_images',
+          progress: '.spinner',
+          imagePath: '',
+          filePrefix: '',
+          ext: '.jpg',
+          height: 400,
+          width: 400,
+          navigation: true,
+          responsive: true,
+          images: images,
+        });
+      });
+    </script>
   </body>
 </html>
