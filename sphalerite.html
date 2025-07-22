@@ -1,110 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sphalerite 360 Viewer</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    canvas {
-      max-width: 100%;
-      max-height: 100%;
-    }
-    button {
-      position: absolute;
-      bottom: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #222;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 10;
-    }
-    button:hover {
-      background: #444;
-    }
-  </style>
-</head>
-<body>
-  <canvas id="viewer"></canvas>
-  <button id="toggleRotation">Pause Rotation</button>
-
-  <script>
-    const canvas = document.getElementById('viewer');
-    const ctx = canvas.getContext('2d');
-    const toggleBtn = document.getElementById('toggleRotation');
-
-    const imageUrls = [];
-    for (let i = 1; i <= 79; i++) {
-      const num = String(i).padStart(5, '0');
-      imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1752883625/Sphalerite/sphalerite-${num}.jpg`);
-    }
-
-    const images = [];
-    let loaded = 0;
-    let currentFrame = 0;
-    let rotating = true;
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      drawImage(currentFrame);
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-
-    function drawImage(index) {
-      if (!images[index]) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const img = images[index];
-      const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
-      const x = (canvas.width - img.width * scale) / 2;
-      const y = (canvas.height - img.height * scale) / 2;
-      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-    }
-
-    function preloadImages(urls, callback) {
-      urls.forEach((url, index) => {
-        const img = new Image();
-        img.onload = () => {
-          loaded++;
-          images[index] = img;
-          if (loaded === urls.length) {
-            callback();
-          }
-        };
-        img.src = url;
-      });
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      rotating = !rotating;
-      toggleBtn.textContent = rotating ? 'Pause Rotation' : 'Resume Rotation';
-    });
-
-    function animate() {
-      if (rotating) {
-        currentFrame = (currentFrame + 1) % images.length;
-        drawImage(currentFrame);
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sphalerite Viewer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
       }
-      requestAnimationFrame(animate);
-    }
 
-    preloadImages(imageUrls, () => {
-      resizeCanvas();
-      animate();
-    });
-  </script>
-</body>
+      #sphalerite-viewer {
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
+        filter: brightness(1.15) saturate(1.5);
+      }
+
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
+      }
+
+      button {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: white;
+        cursor: pointer;
+        margin: 0.5em 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
+  </head>
+  <body>
+    <div id="sphalerite-viewer"></div>
+    <p>Click &amp; Drag</p>
+    <button id="toggle-spin">Pause Rotation</button>
+
+    <script>
+      const imageUrls = [
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221530/sphalerite-00001.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221530/sphalerite-00002.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221531/sphalerite-00003.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221531/sphalerite-00004.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221532/sphalerite-00005.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221533/sphalerite-00006.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221534/sphalerite-00007.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221534/sphalerite-00008.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221535/sphalerite-00009.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221536/sphalerite-00010.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221537/sphalerite-00011.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221538/sphalerite-00012.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221539/sphalerite-00013.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221540/sphalerite-00014.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221541/sphalerite-00015.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221542/sphalerite-00016.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221542/sphalerite-00017.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221543/sphalerite-00018.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221544/sphalerite-00019.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221545/sphalerite-00020.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221546/sphalerite-00021.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221547/sphalerite-00022.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221548/sphalerite-00023.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221549/sphalerite-00024.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221550/sphalerite-00025.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221551/sphalerite-00026.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221552/sphalerite-00027.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221553/sphalerite-00028.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221554/sphalerite-00029.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221555/sphalerite-00030.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221556/sphalerite-00031.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221556/sphalerite-00032.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221557/sphalerite-00033.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221558/sphalerite-00034.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221559/sphalerite-00035.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221560/sphalerite-00036.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221562/sphalerite-00037.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221562/sphalerite-00038.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221563/sphalerite-00039.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221564/sphalerite-00040.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221565/sphalerite-00041.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221566/sphalerite-00042.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221567/sphalerite-00043.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221568/sphalerite-00044.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221569/sphalerite-00045.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221570/sphalerite-00046.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221571/sphalerite-00047.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221572/sphalerite-00048.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221573/sphalerite-00049.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221574/sphalerite-00050.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221575/sphalerite-00051.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221576/sphalerite-00052.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221577/sphalerite-00053.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221578/sphalerite-00054.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221579/sphalerite-00055.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221580/sphalerite-00056.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221581/sphalerite-00057.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221581/sphalerite-00058.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221583/sphalerite-00059.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221584/sphalerite-00060.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221585/sphalerite-00061.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221586/sphalerite-00062.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221587/sphalerite-00063.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221588/sphalerite-00064.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221589/sphalerite-00065.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221590/sphalerite-00066.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221591/sphalerite-00067.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221592/sphalerite-00068.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221593/sphalerite-00069.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221594/sphalerite-00070.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221595/sphalerite-00071.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221596/sphalerite-00072.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221596/sphalerite-00073.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221597/sphalerite-00074.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221599/sphalerite-00075.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221600/sphalerite-00076.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221601/sphalerite-00077.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221601/sphalerite-00078.jpg",
+        "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221602/sphalerite-00079.jpg"
+      ];
+
+      let isPlaying = true;
+
+      const firstImage = new Image();
+      firstImage.src = imageUrls[0];
+
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("sphalerite-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
+
+        $("#sphalerite-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#sphalerite-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
+    </script>
+  </body>
 </html>
