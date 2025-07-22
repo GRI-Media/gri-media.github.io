@@ -1,91 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sphalerite 360º Viewer</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: white;
-      font-family: sans-serif;
-    }
-    canvas {
-      max-width: 100%;
-      height: auto;
-    }
-    h1 {
-      margin: 20px;
-      font-size: 1.5rem;
-    }
-  </style>
-</head>
-<body>
-  <h1>Sphalerite 360º Viewer</h1>
-  <canvas id="viewer" width="800" height="600"></canvas>
-  <script>
-    const frameCount = 79;
-    const imagePrefix = "https://res.cloudinary.com/dy8hjxyum/image/upload/Sphalerite/sphalerite-";
-    const canvas = document.getElementById("viewer");
-    const ctx = canvas.getContext("2d");
-    const images = [];
-    let loadedImages = 0;
-    let currentFrame = 0;
-    let isDragging = false;
-    let startX = 0;
-
-    function pad(num, size) {
-      return num.toString().padStart(size, '0');
-    }
-
-    function loadImages() {
-      for (let i = 1; i <= frameCount; i++) {
-        const img = new Image();
-        img.src = imagePrefix + pad(i, 5) + ".jpg";
-        img.onload = () => {
-          loadedImages++;
-          if (loadedImages === frameCount) {
-            drawFrame(currentFrame);
-          }
-        };
-        images.push(img);
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sphalerite Viewer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
       }
-    }
 
-    function drawFrame(index) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(images[index], 0, 0, canvas.width, canvas.height);
-    }
-
-    canvas.addEventListener("mousedown", (e) => {
-      isDragging = true;
-      startX = e.clientX;
-    });
-
-    canvas.addEventListener("mousemove", (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 5) {
-        const direction = dx > 0 ? -1 : 1;
-        currentFrame = (currentFrame + direction + frameCount) % frameCount;
-        drawFrame(currentFrame);
-        startX = e.clientX;
+      #sphalerite-viewer {
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
+        filter: brightness(1.15) saturate(1.5);
       }
-    });
 
-    canvas.addEventListener("mouseup", () => {
-      isDragging = false;
-    });
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
+      }
 
-    canvas.addEventListener("mouseleave", () => {
-      isDragging = false;
-    });
+      button {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: white;
+        cursor: pointer;
+        margin: 0.5em 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
+  </head>
+  <body>
+    <div id="sphalerite-viewer"></div>
+    <p>Click &amp; Drag</p>
+    <button id="toggle-spin">Pause Rotation</button>
 
-    loadImages();
-  </script>
-</body>
+    <script>
+      const imageUrls = [];
+      for (let i = 1; i <= 79; i++) {
+        const num = i.toString().padStart(5, "0");
+        imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/sphalerite-${num}.jpg`);
+      }
+
+      let isPlaying = true;
+
+      const firstImage = new Image();
+      firstImage.src = imageUrls[0];
+
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("sphalerite-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
+
+        $("#sphalerite-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#sphalerite-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
+    </script>
+  </body>
 </html>
