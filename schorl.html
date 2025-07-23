@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Schorl Viewer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
+      }
+
+      #schorl-viewer {
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
+      }
+
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
+      }
+
+      button {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: white;
+        cursor: pointer;
+        margin: 0.5em 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
+  </head>
+  <body>
+    <div id="schorl-viewer"></div>
+    <p>Click &amp; Drag</p>
+    <button id="toggle-spin">Pause Rotation</button>
+
+    <script>
+      const imageUrls = [];
+      for (let i = 1; i <= 79; i++) {
+        const num = i.toString().padStart(5, "0");
+        imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1753297419/schorl-${num}.jpg`);
+      }
+
+      let isPlaying = true;
+
+      const firstImage = new Image();
+      firstImage.src = imageUrls[0];
+
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("schorl-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
+
+        $("#schorl-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#schorl-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
+    </script>
+  </body>
+</html>
