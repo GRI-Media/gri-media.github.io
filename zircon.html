@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zircon 360° Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+    }
+
+    #viewer {
+      width: 100%;
+      height: 666px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="viewer"></div>
+
+  <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
+  <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
+
+  <script>
+    const container = document.getElementById('viewer');
+    const imageCount = 100;
+    const baseUrl = 'https://res.cloudinary.com/dy8hjxyum/image/upload/v1753316217/zircon-';
+    const imageUrls = [];
+
+    for (let i = 1; i <= imageCount; i++) {
+      const num = String(i).padStart(5, '0');
+      imageUrls.push(`${baseUrl}${num}.jpg`);
+    }
+
+    pannellum.viewer('viewer', {
+      type: 'equirectangular',
+      panorama: imageUrls[0],
+      autoLoad: true,
+      showControls: false,
+      compass: false,
+      pitch: 0,
+      yaw: 0,
+      hfov: 120,
+      disableKeyboardCtrl: false,
+      disableMouseZoom: true,
+      hotSpots: [],
+      animation: {
+        frames: imageUrls,
+        frameRate: 30,
+        loop: true,
+        control: 'drag'
+      }
+    });
+  </script>
+</body>
+</html>
