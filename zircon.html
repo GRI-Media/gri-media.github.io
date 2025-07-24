@@ -1,58 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zircon 360° Viewer</title>
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-    }
-
-    #viewer {
-      width: 100%;
-      height: 666px;
-      overflow: hidden;
-    }
-  </style>
-</head>
-<body>
-  <div id="viewer"></div>
-
-  <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
-  <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css"/>
-
-  <script>
-    const container = document.getElementById('viewer');
-    const imageCount = 100;
-    const baseUrl = 'https://res.cloudinary.com/dy8hjxyum/image/upload/v1753316217/zircon-';
-    const imageUrls = [];
-
-    for (let i = 1; i <= imageCount; i++) {
-      const num = String(i).padStart(5, '0');
-      imageUrls.push(`${baseUrl}${num}.jpg`);
-    }
-
-    pannellum.viewer('viewer', {
-      type: 'equirectangular',
-      panorama: imageUrls[0],
-      autoLoad: true,
-      showControls: false,
-      compass: false,
-      pitch: 0,
-      yaw: 0,
-      hfov: 120,
-      disableKeyboardCtrl: false,
-      disableMouseZoom: true,
-      hotSpots: [],
-      animation: {
-        frames: imageUrls,
-        frameRate: 30,
-        loop: true,
-        control: 'drag'
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Zircon Viewer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
       }
-    });
-  </script>
-</body>
+
+      #zircon-viewer {
+        width: 100%;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
+      }
+
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
+      }
+
+      button {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: white;
+        cursor: pointer;
+        margin: 0.5em 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
+  </head>
+  <body>
+    <div id="zircon-viewer"></div>
+    <p>Click &amp; Drag</p>
+    <button id="toggle-spin">Pause Rotation</button>
+
+    <script>
+      const imageUrls = [];
+      for (let i = 1; i <= 79; i++) {
+        const num = i.toString().padStart(5, "0");
+        imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1752784631/Zircon-${num}.jpg`);
+      }
+
+      let isPlaying = true;
+
+      const firstImage = new Image();
+      firstImage.src = imageUrls[0];
+
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("zircon-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
+
+        $("#zircon-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#zircon-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
+    </script>
+  </body>
 </html>
