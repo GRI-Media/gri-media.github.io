@@ -4,40 +4,46 @@
     <meta charset="UTF-8" />
     <title>Wulfenite Viewer</title>
     <style>
-      html,
       body {
-        margin: 0;
-        padding: 0;
+        font-family: sans-serif;
         background: white;
+        text-align: center;
+        margin: 0;
+        padding: 0.5em 1em 1em;
       }
 
-      .viewer-container {
+      #wulfenite-viewer {
         width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1rem;
-        box-sizing: border-box;
+        max-width: 700px;
+        aspect-ratio: 3 / 2;
+        margin: 1rem auto;
       }
 
-      #viewer {
-        width: 50%;
-        height: auto;
+      p {
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin: 0.5em 0;
+        color: #000;
       }
 
-      @media (max-width: 768px) {
-        #viewer {
-          width: 100%;
-        }
+      button {
+        padding: 0.5em 1em;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #444;
+        color: white;
+        cursor: pointer;
+        margin: 0.5em 0;
       }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
   </head>
   <body>
-    <div class="viewer-container">
-      <div id="viewer"></div>
-    </div>
+    <div id="wulfenite-viewer"></div>
+    <p>Click &amp; Drag</p>
+    <button id="toggle-spin">Pause Rotation</button>
 
     <script>
       const imageUrls = [];
@@ -46,24 +52,31 @@
         imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1753902017/wulfenite-${num}.jpg`);
       }
 
+      let isPlaying = true;
+
       const firstImage = new Image();
       firstImage.src = imageUrls[0];
 
       firstImage.onload = function () {
         const aspectRatio = this.height / this.width;
-        const viewer = document.getElementById("viewer");
-        const viewerWidth = viewer.clientWidth;
-        const viewerHeight = viewerWidth * aspectRatio;
+        const containerWidth = document.getElementById("wulfenite-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
 
-        $("#viewer").spritespin({
+        $("#wulfenite-viewer").spritespin({
           source: imageUrls,
-          width: viewerWidth,
-          height: viewerHeight,
+          width: containerWidth,
+          height: containerHeight,
           sense: 1,
           frameTime: 60,
-          animate: true,
+          animate: isPlaying,
           loop: true,
           responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#wulfenite-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
         });
       };
     </script>
