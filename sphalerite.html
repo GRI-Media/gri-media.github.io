@@ -22,31 +22,40 @@
 <body>
   <div id="viewer"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/spritespin@4.0.11/release/spritespin.min.js"></script>
   <script>
-    const imageCount = 79;
-    const imageBase = "https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221530/sphalerite-";
-    const images = [];
+      const imageUrls = [];
+      for (let i = 1; i <= 79; i++) {
+        const num = i.toString().padStart(5, "0");
+        imageUrls.push(`https://res.cloudinary.com/dy8hjxyum/image/upload/v1753221530/sphalerite-00001.jpg`);
+      }
 
-    for (let i = 1; i <= imageCount; i++) {
-      const num = String(i).padStart(5, '0');
-      images.push(`${imageBase}${num}.jpg`);
-    }
+      let isPlaying = true;
 
-    SpriteSpin.create({
-      source: images,
-      width: 800,
-      height: 600,
-      sense: -1,
-      frameTime: 60,
-      container: "#viewer",
-      responsive: true,
-      plugins: [
-        'drag',
-        '360',
-        'wheel'
-      ]
-    });
-  </script>
-</body>
+      const firstImage = new Image();
+      firstImage.src = imageUrls[0];
+
+      firstImage.onload = function () {
+        const aspectRatio = this.height / this.width;
+        const containerWidth = document.getElementById("sphalerite-viewer").clientWidth;
+        const containerHeight = containerWidth * aspectRatio;
+
+        $("#sphalerite-viewer").spritespin({
+          source: imageUrls,
+          width: containerWidth,
+          height: containerHeight,
+          sense: 1,
+          frameTime: 60,
+          animate: isPlaying,
+          loop: true,
+          responsive: true,
+        });
+
+        $("#toggle-spin").click(function () {
+          isPlaying = !isPlaying;
+          $("#sphalerite-viewer").spritespin("animate", isPlaying);
+          $(this).text(isPlaying ? "Pause Rotation" : "Resume Rotation");
+        });
+      };
+    </script>
+  </body>
 </html>
